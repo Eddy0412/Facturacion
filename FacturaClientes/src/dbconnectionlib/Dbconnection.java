@@ -12,14 +12,14 @@ public class Dbconnection {
 	String user = "Guest";
 	String password = "123456789";
 	
-	Connection con = null;
+	Connection conn = null;
 	
 	public Connection getCon() {
-		return con;
+		return conn;
 	}
 
-	public void setCon(Connection con) {
-		this.con = con;
+	public void setCon(Connection conn) {
+		this.conn = conn;
 	}
 
 	public Dbconnection(){
@@ -37,7 +37,7 @@ public class Dbconnection {
 			
 			try {
 				
-				con = DriverManager.getConnection(url, user, password);
+				conn = DriverManager.getConnection(url, user, password);
 				
 				System.out.println("Login Successful!");
 			} catch(SQLException e) {
