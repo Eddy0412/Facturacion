@@ -5,9 +5,24 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Dbconnection {
+	
+	
+	// String url = "jdbc:mysql://10.1.104.32:3306/facturacion?useSSL=false";
+	String url = "jdbc:mysql://10.1.104.32:3306/facturacion?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false";
+	String user = "Guest";
+	String password = "123456789";
+	
+	Connection con = null;
+	
+	public Connection getCon() {
+		return con;
+	}
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public void setCon(Connection con) {
+		this.con = con;
+	}
+
+	public Dbconnection(){
 
 		try {
 			
@@ -15,16 +30,10 @@ public class Dbconnection {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			
 			System.out.println("MySQL Driver found!");
-		} catch (ClassNotFoundException e) {
-			System.out.println("Driver not found"+e);
+		} catch (ClassNotFoundException e1) {
+			System.out.println("Driver not found"+e1);
 		}
-		
-			// String url = "jdbc:mysql://10.1.104.32:3306/facturacion?useSSL=false";
-			String url = "jdbc:mysql://10.1.104.32:3306/facturacion?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false";
-			String user = "Guest";
-			String password = "123456789";
-			
-			Connection con = null;
+
 			
 			try {
 				
@@ -35,7 +44,5 @@ public class Dbconnection {
 				System.out.println(e);
 				System.out.println("It didn't Connect.");
 			}
-			
-	}
-
 }
+	}
