@@ -14,7 +14,7 @@ public class Crud {
 
 	private Dbconnection conn;
 	private PreparedStatement preparedStatement;
-	private ResultSet resultset;
+	private ResultSet resultset,resultset2;
 	private String query;
 
 	public Crud() {
@@ -55,17 +55,16 @@ public class Crud {
 			query = "SELECT * FROM fadetalles WHERE FAnumero=?";
 			preparedStatement = conn.getCon().prepareStatement(query);
 			preparedStatement.setInt(1,FAnumero);
-			resultset = preparedStatement.executeQuery();
-			while (resultset.next()) {
-				detalleFactura.add(new DetalleFactura( resultset.getInt("id_FAdetalles"),resultset.getString("FAarticulo"), resultset.getInt("FAcantidad"),
-						resultset.getString("FAunidad"), resultset.getDouble("FAtotal"),resultset.getDouble("FAitbm"),resultset.getInt("FAnumero")));
+			resultset2 = preparedStatement.executeQuery();
+			while (resultset2.next()) {
+				detalleFactura.add(new DetalleFactura( resultset2.getInt("id_FAdetalles"),resultset2.getString("FAarticulo"), resultset2.getInt("FAcantidad"),
+						resultset2.getString("FAunidad"), resultset2.getDouble("FAtotal"),resultset2.getDouble("FAitbm"),resultset2.getInt("FAnumero")));
 			}
 			return detalleFactura;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}finally {
-			closeResultSet();
 			query="";
 			closeStament();
 			conn.CloseConnection();	
@@ -133,8 +132,10 @@ public Cliente selectClienteByCliente(int CLnumero) {
 	}
 	public void closeResultSet() {
 		try {
-			if(resultset!=null)
-			resultset.close();
+			if(resultset!=null )
+			{
+				resultset.close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
