@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class Factura {
 	
@@ -8,6 +9,7 @@ public class Factura {
 	private String FAproveedor;
 	private Date FAfecha;
 	private int CLnumero;
+	private ArrayList<DetalleFactura>detalleFacturas;
 	
 	public Factura(int fAnumero, String fAproveedor, Date fAfecha, int cLnumero) {
 		FAnumero = fAnumero;
@@ -17,6 +19,12 @@ public class Factura {
 	}
 	public Factura() {
 		// TODO Auto-generated constructor stub
+	}
+	public ArrayList<DetalleFactura> getDetalleFacturas() {
+		return detalleFacturas;
+	}
+	public void setDetalleFacturas(ArrayList<DetalleFactura> detalleFacturas) {
+		this.detalleFacturas = detalleFacturas;
 	}
 	public int getFAnumero() {
 		return FAnumero;

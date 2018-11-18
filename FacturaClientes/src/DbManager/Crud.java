@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import model.Cliente;
 import model.ClienteAppend;
 import model.DetalleFactura;
 import model.Factura;
@@ -16,7 +17,7 @@ public class Crud {
 	private ResultSet resultset;
 	private String query;
 
-	Crud() {
+	public Crud() {
 		conn = new Dbconnection();
 	}
 
@@ -25,48 +26,51 @@ public class Crud {
 
 	public ArrayList<Factura> selectFacturasByCliente(int CLnumero) {
 		try {
-			ArrayList<Factura> facturas = new ArrayList<>();
+			ArrayList<Factura> facturas=new ArrayList<>(); 
 			query = "SELECT * FROM factura WHERE CLnumero=?";
 			preparedStatement = conn.getCon().prepareStatement(query);
-			preparedStatement.setInt(CLnumero, 1);
+			preparedStatement.setInt(1,CLnumero);
 			resultset = preparedStatement.executeQuery();
 			while (resultset.next()) {
-				facturas.add(new Factura(resultset.getInt("FAnumero"), resultset.getString("FAproveedor"),
-						resultset.getDate("FAfecha"), resultset.getInt("CLnumero")));
+				Factura factura =  new Factura(resultset.getInt("FAnumero"), resultset.getString("FAproveedor"),
+						resultset.getDate("FAfecha"), resultset.getInt("CLnumero"));
+				factura.setDetalleFacturas(selectDetalleFacturaByFactura(factura.getFAnumero()));
+			  facturas.add(factura);
 			}
 			return facturas;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}finally {
+			closeResultSet();
 			query="";
 			closeStament();
 			conn.CloseConnection();	
 		}
 
 	}
-	public ArrayList<DetalleFactura> selectDetalleFacturaByFactura(int id_FAdetalles) {
-		ArrayList<DetalleFactura> detalleFactura = new ArrayList<>();
+	public ArrayList<DetalleFactura> selectDetalleFacturaByFactura(int FAnumero) {
 		try {
-			ArrayList<DetalleFactura> facturas = new ArrayList<>();
-			query = "SELECT * FROM factura WHERE CLnumero=?";
+			ArrayList<DetalleFactura> detalleFactura = new ArrayList<>();
+			query = "SELECT * FROM fadetalles WHERE FAnumero=?";
 			preparedStatement = conn.getCon().prepareStatement(query);
-			preparedStatement.setInt(FAnumero, 1);
+			preparedStatement.setInt(1,FAnumero);
 			resultset = preparedStatement.executeQuery();
 			while (resultset.next()) {
-				detalleFactura.add(new DetalleFactura(resultset.getString("FAarticulo"), resultset.getString("FAproveedor"),
-						resultset.getDate("FAfecha"), resultset.getInt("CLnumero")));
+				detalleFactura.add(new DetalleFactura( resultset.getInt("id_FAdetalles"),resultset.getString("FAarticulo"), resultset.getInt("FAcantidad"),
+						resultset.getString("FAunidad"), resultset.getDouble("FAtotal"),resultset.getDouble("FAitbm"),resultset.getInt("FAnumero")));
 			}
-			return facturas;
+			return detalleFactura;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}finally {
+			closeResultSet();
 			query="";
 			closeStament();
 			conn.CloseConnection();	
 		}
-		return detalleFactura;
+		
 	}
 
 	public ArrayList<ClienteAppend> countFacturaByCliente(int CLnumero) {
@@ -75,7 +79,7 @@ public class Crud {
 			ArrayList<ClienteAppend> clientesCuntFacturas = new ArrayList<>();
 			query = "SELECT cliente.*,COUNT(factura.FAnumero)as count FROM factura INNER JOIN cliente where factura.CLnumero=cliente.CLnumero GROUP BY cliente.CLnumero";
 			preparedStatement = conn.getCon().prepareStatement(query);
-			preparedStatement.setInt(CLnumero, 1);
+			preparedStatement.setInt(1,CLnumero);
 			resultset = preparedStatement.executeQuery();
 			while (resultset.next()) {
 				clientesCuntFacturas.add(new ClienteAppend(resultset.getInt("CLnumero"),resultset.getString("CLid"), resultset.getString("CLnombre"),
@@ -86,10 +90,35 @@ public class Crud {
 			e.printStackTrace();
 			return null;
 		}finally {
+			closeResultSet();
 			query="";
 			closeStament();
 			conn.CloseConnection();	
 		}
+	}
+	
+public Cliente selectClienteByCliente(int CLnumero) {
+		
+		try {
+			query = "SELECT * FROM cliente WHERE CLnumero =?";
+			preparedStatement = conn.getCon().prepareStatement(query);
+			preparedStatement.setInt(1,CLnumero);
+			resultset = preparedStatement.executeQuery();
+			while (resultset.next()) {
+				Cliente cliente=new Cliente(resultset.getInt("CLnumero"),resultset.getString("CLid"), resultset.getString("CLnombre"),
+						resultset.getString("CLapellido"), resultset.getString("CLdireccion"), resultset.getString("CLtelefono"), resultset.getString("CLactividad"));
+				return cliente;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}finally {
+			closeResultSet();
+			query="";
+			closeStament();
+			conn.CloseConnection();	
+		}
+		return null;
 	}
 	
 
@@ -102,6 +131,14 @@ public class Crud {
 				e.printStackTrace();
 			}
 	}
+	public void closeResultSet() {
+		try {
+			if(resultset!=null)
+			resultset.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+}
 
 	
 	public void deleteAll() {
