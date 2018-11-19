@@ -10,7 +10,7 @@ public class ClienteAppend extends Cliente {
 	public ClienteAppend(int cLnumero, String cLid, String cLnombre, String cLapellido, String cLdireccion,
 			String cLtelefono, String cLactividad,int facturaCount) {
 		super(cLnumero, cLid, cLnombre, cLapellido, cLdireccion, cLtelefono, cLactividad);
-		
+		this.facturaCount=facturaCount;
 	}
 
 
